@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Default theme (India) */
+  --color-primary: #3D52A0;
+  --color-secondary: #7091E6;
+  --color-accent: #8697C4;
+  --color-surface: #ADBBDA;
+  --color-background: #EDE8F5;
+}
+
+/* For RTL support */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="ltr"] {
+  text-align: left;
+}
