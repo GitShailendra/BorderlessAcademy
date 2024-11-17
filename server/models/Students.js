@@ -73,9 +73,15 @@ const studentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  guardian:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Guardian'
+
   }
 }, {
   timestamps: true // This will automatically handle createdAt and updatedAt

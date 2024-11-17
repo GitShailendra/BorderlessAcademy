@@ -27,7 +27,11 @@ const guardianSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Password is required']
-  }
+  },
+  students:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Student'
+  }]
 });
 
 module.exports = mongoose.model('Guardian', guardianSchema);
