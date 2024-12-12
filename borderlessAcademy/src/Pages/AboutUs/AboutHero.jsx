@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Globe, Users, School, Award } from 'lucide-react';
-
+import abouthero from "../../assets/Images/home/aboutus.jpg";
 export default function AboutHero() {
   const { t } = useTranslation();
 
@@ -84,7 +84,7 @@ export default function AboutHero() {
           <div className="relative hidden lg:block">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img 
-                src="/api/placeholder/800/1000"
+                src={abouthero}
                 alt="Students learning"
                 className="w-full h-auto object-cover"
               />

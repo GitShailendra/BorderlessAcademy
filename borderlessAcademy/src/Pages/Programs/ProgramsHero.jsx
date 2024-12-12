@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { GraduationCap, Users, Globe2, BookOpen } from 'lucide-react';
-
+import programhero from "../../assets/Images/home/program.jpg";
 const ProgramsHero = () => {
   const { t } = useTranslation();
 
@@ -83,7 +83,7 @@ const ProgramsHero = () => {
           <div className="relative hidden lg:block">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img 
-                src="/api/placeholder/800/1000"
+                src={programhero}
                 alt="Digital learning experience"
                 className="w-full h-auto object-cover"
               />

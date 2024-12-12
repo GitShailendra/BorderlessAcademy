@@ -38,12 +38,12 @@ const Home = () => {
   return (
     <div className="relative">
       {/* Theme Debugger Toggle Button */}
-      <button
+      {/* <button
         onClick={() => setShowDebugger(prev => !prev)}
         className="fixed top-4 right-4 z-50 px-3 py-1 text-xs bg-gray-800 text-white rounded-full opacity-50 hover:opacity-100 transition-opacity"
       >
         {showDebugger ? 'Hide Debugger' : 'Show Debugger'}
-      </button>
+      </button> */}
 
       {/* Theme Debugger */}
       {showDebugger && <ThemeDebugger />}
