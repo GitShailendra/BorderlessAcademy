@@ -487,7 +487,7 @@ import {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleContinue}
-            className="w-full py-3 bg-teal-500 text-white rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-teal-600 transition-colors"
+            className="w-full py-3 bg-primary text-white rounded-lg font-semibold flex items-center justify-center gap-2  transition-colors"
         >
             Continue
             <ChevronRight className="w-5 h-5" />
@@ -810,7 +810,7 @@ import {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-3 bg-teal-500 text-white rounded-lg font-semibold hover:bg-teal-600 transition-colors"
+                className="w-full py-3 bg-primary text-white rounded-lg font-semibold  transition-colors"
               >
                 Complete Registration
               </motion.button>

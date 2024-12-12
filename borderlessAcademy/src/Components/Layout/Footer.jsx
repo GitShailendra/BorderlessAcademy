@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../../assets/Theme/ThemeContext';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
-
+import logo from "../../assets/Images/logo/boderlesslogonavwhite32x32-01.png";
 export default function Footer() {
   const { theme } = useTheme();
   
@@ -15,7 +15,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">Borderless Academy</h3>
+          <img src={logo} alt="Borderless Academy Logo" className="h-16 w-auto" />
             <p className="text-sm opacity-80">
               Transforming education through accessible online learning. 
               Quality education without boundaries.

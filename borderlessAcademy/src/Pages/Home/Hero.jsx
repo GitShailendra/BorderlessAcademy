@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Play } from 'lucide-react';
+import heroimage from "../../assets/Images/home/heroimage.jpg";
 
 export default function HeroSection() {
   const { t } = useTranslation();
@@ -9,7 +10,7 @@ export default function HeroSection() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
       {/* Content */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-7xl pt-12 mx-auto px-4 sm:px-6 lg:px-8">
         <div className="min-h-screen flex items-center">
           <div className="w-full lg:w-1/2 py-20 lg:py-0">
             {/* Main Heading */}
@@ -58,7 +59,7 @@ export default function HeroSection() {
               {/* Main Image */}
               <div className="rounded-2xl overflow-hidden shadow-2xl">
                 <img 
-                  src="/api/placeholder/800/600" 
+                  src={heroimage} 
                   alt="Students learning globally"
                   className="w-full h-auto"
                 />

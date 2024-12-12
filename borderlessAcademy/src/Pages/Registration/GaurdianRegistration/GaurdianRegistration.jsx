@@ -385,7 +385,7 @@ const GuardianRegistrationForm = ({ currentStep, onStepChange }) => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleContinue}
-                className="w-full py-3 bg-teal-500 text-white rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-teal-600 transition-colors"
+                className="w-full py-3 bg-primary text-white rounded-lg font-semibold flex items-center justify-center gap-2 hover:secondary transition-colors"
               >
                 Continue
                 <ChevronRight className="w-5 h-5" />
@@ -619,7 +619,7 @@ const GuardianRegistrationForm = ({ currentStep, onStepChange }) => {
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full py-3 bg-teal-500 text-white rounded-lg font-semibold hover:bg-teal-600 transition-colors disabled:bg-gray-300"
+                  className="w-full py-3 bg-primary text-white rounded-lg font-semibold transition-colors disabled:bg-gray-300"
                 >
                   {isSubmitting ? "Submitting..." : "Complete Registration"}
                 </motion.button>
