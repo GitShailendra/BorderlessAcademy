@@ -25,6 +25,7 @@ import {
   EyeIcon,
 } from "lucide-react";
 import StudentRegistrationManager from '../student/StudentRegistrationManager'
+import authService from '../../../Components/services/authService'
 const GuardianRegistrationForm = ({ currentStep, onStepChange }) => {
   const [showStudentForms, setShowStudentForms] = useState(false);
   const [guardianId, setGuardianId] = useState(null);
@@ -144,19 +145,12 @@ const GuardianRegistrationForm = ({ currentStep, onStepChange }) => {
         numberOfStudents: parseInt(formData.numberOfStudents) || 0,
       };
 
-      const response = await fetch("http://localhost:5000/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(submissionData),
-      });
+      const result = await authService.registerGuardian(submissionData);
 
-      const result = await response.json();
-      console.log(result.data._id, "submitted successfully");
-      if (!response.ok) {
-        throw new Error(result.message || "Registration failed");
-      }
+      console.log(result.data, "submitted successfully");
+      // if (!response.ok) {
+      //   throw new Error(result.message || "Registration failed");
+      // }
       setNoStudent(result.data.numberOfStudents)
       setIsGuardianSubmitted(true);
       setGuardianId(result.data._id); // Assuming the backend returns the guardian's ID

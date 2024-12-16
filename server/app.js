@@ -11,7 +11,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 connectDb();
-app.use("/register",GuardianRoute)
+app.use("/guardian",GuardianRoute)
 app.use("/teacher",TeacherRoute)
 app.use("/student",StudentRoute)
 app.listen(PORT, () => {

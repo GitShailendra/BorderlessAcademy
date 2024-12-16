@@ -6,6 +6,7 @@ import './i18n/i18n'; // Import i18n configuration
 import About from './Pages/AboutUs/About';
 import Programs from './Pages/Programs/Programs';
 import Contact from './Pages/ContactUs/Contact';
+import { Import } from 'lucide-react';
 
 // Lazy load components
 const Layout = lazy(() => import('./components/layout/Layout'));
@@ -14,7 +15,10 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const Courses = lazy(() => import('./Pages/Courses/Courses'));
 const RegisterPage = lazy(() => import('./Pages/Registration/RegisterPage'));
 const LoginPage = lazy(() => import('./Pages/Registration/LoginPage'));
-
+const GuardianDashboard = lazy(() => import('./Pages/Registration/GaurdianRegistration/GuardianDashboard'))
+const StudentDashboard = lazy(()=> import('./Pages/Registration/student/StudentDashboard'))
+const TeacherDashboard = lazy(()=>import('./Pages/Registration/TeacherRegistration/TeacherDashboard'))
+const AdminDashboard = lazy(()=>import('./Pages/Registration/Admin/AdminDashboard'))
 // Loading component with translation
 const LoadingFallback = () => (
   <div className="h-screen w-screen flex items-center justify-center bg-background">
@@ -32,7 +36,7 @@ function App() {
   React.useEffect(() => {
     // Get stored language or browser language
     const storedLang = localStorage.getItem('i18nextLng') || navigator.language;
-    
+
     // Set RTL for Arabic
     if (storedLang.startsWith('ar')) {
       document.documentElement.dir = 'rtl';
@@ -48,69 +52,102 @@ function App() {
           <Layout>
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
-                <Route 
-                  path="/" 
+                <Route
+                  path="/"
                   element={
                     <Suspense fallback={<LoadingFallback />}>
                       <Home />
                     </Suspense>
-                  } 
+                  }
                 />
-                <Route 
-                  path="/About" 
+                <Route
+                  path="/About"
                   element={
                     <Suspense fallback={<LoadingFallback />}>
                       <About />
                     </Suspense>
-                  } 
+                  }
                 />
-                <Route 
-                  path="/programs" 
+                <Route
+                  path="/programs"
                   element={
                     <Suspense fallback={<LoadingFallback />}>
                       <Programs />
                     </Suspense>
-                  } 
+                  }
                 />
-                <Route 
-                  path="/courses" 
+                <Route
+                  path="/courses"
                   element={
                     <Suspense fallback={<LoadingFallback />}>
                       <Courses />
                     </Suspense>
-                  } 
+                  }
                 />
-                <Route 
-                  path="/register" 
+                <Route
+                  path="/register"
                   element={
                     <Suspense fallback={<LoadingFallback />}>
                       <RegisterPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                 <Route 
-                  path="/contact" 
+                <Route
+                  path="/contact"
                   element={
                     <Suspense fallback={<LoadingFallback />}>
                       <Contact />
                     </Suspense>
-                  } 
+                  }
                 />
-                <Route 
-                  path="/login" 
+                <Route
+                  path="/login"
                   element={
                     <Suspense fallback={<LoadingFallback />}>
                       <LoginPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                <Route 
-                  path="*" 
+                <Route path="/guardian/*" element={<GuardianDashboard />}>
+                  {/* <Route index element={<Navigate to="overview" />} />
+                  <Route path="overview" element={<GuardianDashboard />} />
+                  <Route path="students/:studentId/*" element={<StudentDashboard />} />
+                  <Route path="messages" element={<GuardianMessages />} />
+                  <Route path="payments" element={<GuardianPayments />} />
+                  <Route path="settings" element={<GuardianSettings />} /> */}
+                </Route>
+                <Route path="/student/*" element={<StudentDashboard/>}>
+                  {/* <Route index element={<Navigate to="overview" />} />
+                  <Route path="overview" element={<GuardianDashboard />} />
+                  <Route path="students/:studentId/*" element={<StudentDashboard />} />
+                  <Route path="messages" element={<GuardianMessages />} />
+                  <Route path="payments" element={<GuardianPayments />} />
+                  <Route path="settings" element={<GuardianSettings />} /> */}
+                </Route>
+                <Route path="/teacher/*" element={<TeacherDashboard/>}>
+                  {/* <Route index element={<Navigate to="overview" />} />
+                  <Route path="overview" element={<GuardianDashboard />} />
+                  <Route path="students/:studentId/*" element={<StudentDashboard />} />
+                  <Route path="messages" element={<GuardianMessages />} />
+                  <Route path="payments" element={<GuardianPayments />} />
+                  <Route path="settings" element={<GuardianSettings />} /> */}
+                </Route>
+                <Route path="/admin/*" element={<AdminDashboard/>}>
+                  {/* <Route index element={<Navigate to="overview" />} />
+                  <Route path="overview" element={<GuardianDashboard />} />
+                  <Route path="students/:studentId/*" element={<StudentDashboard />} />
+                  <Route path="messages" element={<GuardianMessages />} />
+                  <Route path="payments" element={<GuardianPayments />} />
+                  <Route path="settings" element={<GuardianSettings />} /> */}
+                </Route>
+
+                <Route
+                  path="*"
                   element={
                     <Suspense fallback={<LoadingFallback />}>
                       <NotFound />
                     </Suspense>
-                  } 
+                  }
                 />
               </Routes>
             </Suspense>
