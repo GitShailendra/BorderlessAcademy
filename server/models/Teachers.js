@@ -143,7 +143,26 @@ const teacherSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
-    }
+    },
+    role: {
+        type: String,
+        default: 'teacher',
+        immutable: true
+    },
+    subjects: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Subject', // Reference to Subject model
+        }
+    ],
+    students:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Student', // Reference to Student model
+        }
+    ]
+    
+        
 }, {
     timestamps: true // This automatically handles createdAt and updatedAt
 });

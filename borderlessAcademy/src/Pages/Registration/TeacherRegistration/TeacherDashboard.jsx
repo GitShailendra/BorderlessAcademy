@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import {
   Users, Book, Award, Settings, LogOut,
   Bell, Menu, X, Home, BookOpen,
@@ -17,11 +17,66 @@ import Grades from './Grades'
 import Reports from './Reports'
 import Messages from './Messages';
 import SettingPage from './SettingPage';
+import authService from '../../../Components/services/authService';
+import { useAuth } from '../../../Components/auth/AuthContext';
+import classService from '../../../Components/services/classServices';
 // import Calendars from './Calendars'
 const TeacherDashboard = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const navigate = useNavigate();
+const {auth,logout} = useAuth();
 
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [userData, setUserData] = useState(null);
+  const navigate = useNavigate();
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const userInfo = auth.user.info
+  const userInfo2 = auth.user
+  useEffect(() => {
+    console.log('======',auth,'=====')
+    const checkAuth = async () => {
+      try {
+        // Check if user is authenticated and is a teacher
+        if (!authService.isAuthenticated() || !authService.hasRole('teacher')) {
+          navigate('/login');
+          return;
+        }
+
+        // Get user info
+        const userInfo = authService.getUserInfo();
+        setUserData(userInfo);
+
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        navigate('/login');
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
+  useEffect(() => {
+    const fetchTotalStudents = async () => {
+      try {
+        const response = await classService.getStudents();
+
+        console.log('Total students:', response.data.total);
+        setTotalStudents(response.data.total);
+      } catch (error) {
+        console.error('Error fetching student count:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTotalStudents();
+  }, []);
+  const handleLogout = () => {
+    try {
+      logout();
+    navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
   // Navigation items exactly matching the teacher dashboard image
   const navigationItems = [
     { icon: <Home />, label: "Dashboard", path: "/teacher/dashboard" },
@@ -68,7 +123,7 @@ const TeacherDashboard = () => {
                 className="w-8 h-8 rounded-full border"
               />
               <div className="text-left">
-                <div className="font-medium text-sm">Dr. Sarah Smith</div>
+                <div className="font-medium text-sm">{userInfo2.name}</div>
                 <div className="text-xs text-gray-500">Science Department</div>
               </div>
             </div>
@@ -91,7 +146,7 @@ const TeacherDashboard = () => {
 
         {/* Logout Button */}
         <div className="absolute bottom-4 left-4">
-          <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <button onClick={handleLogout} className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
             <LogOut size={20} />
             {sidebarOpen && <span>Logout</span>}
           </button>
@@ -115,7 +170,7 @@ const TeacherDashboard = () => {
                 alt="Profile"
                 className="w-8 h-8 rounded-full border"
               />
-              <span className="font-medium text-gray-700">Dr. Sarah Smith</span>
+              <span className="font-medium text-gray-700">{userInfo2.name}</span>
             </div>
           </div>
         </header>
@@ -129,8 +184,8 @@ const TeacherDashboard = () => {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                   <StatCard
-                    title="Total Students"
-                    value="156"
+                    title={loading ? '...' : totalStudents}
+                    
                     icon={<Users className="text-blue-500" />}
                     trend="↑ 12 New"
                   />

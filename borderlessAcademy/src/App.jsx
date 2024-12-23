@@ -7,6 +7,9 @@ import About from './Pages/AboutUs/About';
 import Programs from './Pages/Programs/Programs';
 import Contact from './Pages/ContactUs/Contact';
 import { Import } from 'lucide-react';
+import ProtectedRoute from './Components/auth/ProtectedRoutes';
+import { AuthProvider } from './Components/auth/AuthContext';
+// import AdminLogin from './Pages/Registration/AdminLogin';
 
 // Lazy load components
 const Layout = lazy(() => import('./components/layout/Layout'));
@@ -16,6 +19,7 @@ const Courses = lazy(() => import('./Pages/Courses/Courses'));
 const RegisterPage = lazy(() => import('./Pages/Registration/RegisterPage'));
 const LoginPage = lazy(() => import('./Pages/Registration/LoginPage'));
 const GuardianDashboard = lazy(() => import('./Pages/Registration/GaurdianRegistration/GuardianDashboard'))
+const AdminLogin = lazy(()=>import('./Pages/Registration/AdminLogin'))
 const StudentDashboard = lazy(()=> import('./Pages/Registration/student/StudentDashboard'))
 const TeacherDashboard = lazy(()=>import('./Pages/Registration/TeacherRegistration/TeacherDashboard'))
 const AdminDashboard = lazy(()=>import('./Pages/Registration/Admin/AdminDashboard'))
@@ -51,6 +55,7 @@ function App() {
         <Suspense fallback={<LoadingFallback />}>
           <Layout>
             <Suspense fallback={<LoadingFallback />}>
+            <AuthProvider>
               <Routes>
                 <Route
                   path="/"
@@ -108,38 +113,88 @@ function App() {
                     </Suspense>
                   }
                 />
-                <Route path="/guardian/*" element={<GuardianDashboard />}>
+                <Route
+                  path="/manage-system-access"
+                  element={
+                    <Suspense fallback={<LoadingFallback />}>
+                     <AdminLogin/>
+                    </Suspense>
+                  }
+                />
+                {/* <Route path="/guardian/*" element={<GuardianDashboard />}> */}
                   {/* <Route index element={<Navigate to="overview" />} />
                   <Route path="overview" element={<GuardianDashboard />} />
                   <Route path="students/:studentId/*" element={<StudentDashboard />} />
                   <Route path="messages" element={<GuardianMessages />} />
                   <Route path="payments" element={<GuardianPayments />} />
                   <Route path="settings" element={<GuardianSettings />} /> */}
-                </Route>
-                <Route path="/student/*" element={<StudentDashboard/>}>
+                {/* </Route> */}
+                <Route
+                  path="/guardian/*"
+                  element={
+                    <ProtectedRoute allowedRoles={['guardian']}>
+                      <Suspense fallback={<LoadingFallback />}>
+                      <GuardianDashboard />
+                      </Suspense>
+                    </ProtectedRoute>
+                  }
+                />
+                 <Route
+                  path="/student/*"
+                  element={
+                    <ProtectedRoute allowedRoles={['student']}>
+                      <Suspense fallback={<LoadingFallback />}>
+                      <StudentDashboard />
+                      </Suspense>
+                    </ProtectedRoute>
+                  }
+                />
+                {/* <Route path="/student/*" element={<StudentDashboard/>}> */}
                   {/* <Route index element={<Navigate to="overview" />} />
                   <Route path="overview" element={<GuardianDashboard />} />
                   <Route path="students/:studentId/*" element={<StudentDashboard />} />
                   <Route path="messages" element={<GuardianMessages />} />
                   <Route path="payments" element={<GuardianPayments />} />
                   <Route path="settings" element={<GuardianSettings />} /> */}
-                </Route>
-                <Route path="/teacher/*" element={<TeacherDashboard/>}>
+                {/* </Route> */}
+                {/* <Route path="/teacher/*" element={<TeacherDashboard/>}> */}
                   {/* <Route index element={<Navigate to="overview" />} />
                   <Route path="overview" element={<GuardianDashboard />} />
                   <Route path="students/:studentId/*" element={<StudentDashboard />} />
                   <Route path="messages" element={<GuardianMessages />} />
                   <Route path="payments" element={<GuardianPayments />} />
                   <Route path="settings" element={<GuardianSettings />} /> */}
-                </Route>
-                <Route path="/admin/*" element={<AdminDashboard/>}>
+                {/* </Route> */}
+                <Route
+                  path="/teacher/*"
+                  element={
+                    <ProtectedRoute allowedRoles={['teacher']}>
+                      <Suspense fallback={<LoadingFallback />}>
+                        <TeacherDashboard />
+                      </Suspense>
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/*Admin ROute */}
+                <Route
+                  path="/admin/*"
+                  element={
+                    <ProtectedRoute allowedRoles={['admin']}>
+                      <Suspense fallback={<LoadingFallback />}>
+                        <AdminDashboard />
+                      </Suspense>
+                    </ProtectedRoute>
+                  }
+                />
+                {/* <Route path="/admin/*" element={<AdminDashboard/>}> */}
                   {/* <Route index element={<Navigate to="overview" />} />
                   <Route path="overview" element={<GuardianDashboard />} />
                   <Route path="students/:studentId/*" element={<StudentDashboard />} />
                   <Route path="messages" element={<GuardianMessages />} />
                   <Route path="payments" element={<GuardianPayments />} />
                   <Route path="settings" element={<GuardianSettings />} /> */}
-                </Route>
+                {/* </Route> */}
 
                 <Route
                   path="*"
@@ -150,6 +205,7 @@ function App() {
                   }
                 />
               </Routes>
+              </AuthProvider>
             </Suspense>
           </Layout>
         </Suspense>

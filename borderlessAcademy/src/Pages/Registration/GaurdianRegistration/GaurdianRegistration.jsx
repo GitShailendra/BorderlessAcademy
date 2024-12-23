@@ -48,6 +48,7 @@ const GuardianRegistrationForm = ({ currentStep, onStepChange }) => {
     occupation: "",
     asylumStatus: "",
     password: "",
+    email:""
   });
   console.log("Current Step:", currentStep);
 
@@ -83,6 +84,7 @@ const GuardianRegistrationForm = ({ currentStep, onStepChange }) => {
       "dateOfBirth",
       "numberOfStudents",
       "primaryPhone",
+      "email"
     ];
     const newErrors = {};
 
@@ -148,12 +150,14 @@ const GuardianRegistrationForm = ({ currentStep, onStepChange }) => {
       const result = await authService.registerGuardian(submissionData);
 
       console.log(result.data, "submitted successfully");
+      console.log(result.data.id, "submitted successfully");
+      console.log('=============',result.data.numberOfStudents,'===============')
       // if (!response.ok) {
       //   throw new Error(result.message || "Registration failed");
       // }
       setNoStudent(result.data.numberOfStudents)
       setIsGuardianSubmitted(true);
-      setGuardianId(result.data._id); // Assuming the backend returns the guardian's ID
+      setGuardianId(result.data.id); // Assuming the backend returns the guardian's ID
       setShowStudentForms(true);
 
       // Clear form data on successful submission
@@ -172,6 +176,7 @@ const GuardianRegistrationForm = ({ currentStep, onStepChange }) => {
         occupation: "",
         asylumStatus: "",
         password: "",
+        email:""
       });
 
       // You can add success handling here (e.g., show success message, redirect)
@@ -225,6 +230,29 @@ const GuardianRegistrationForm = ({ currentStep, onStepChange }) => {
         <form onSubmit={handleSubmit}>
           {currentStep === 1 ? (
             <div className="space-y-4">
+               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    value={formData.email}
+                    name="email"
+                    onChange={handleChange}
+                    className={`w-full pl-10 pr-4 py-2.5 border ${
+                      errors.email ? "border-red-500" : "border-gray-200"
+                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500`}
+                    placeholder="Enter your email"
+                  />
+                </div>
+                {errors.email && (
+                  <span className="text-red-500 text-sm mt-1">
+                    {errors.email}
+                  </span>
+                )}
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Full Name

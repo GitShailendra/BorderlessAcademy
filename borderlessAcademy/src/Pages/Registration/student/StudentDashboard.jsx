@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import {
   Users, Book, Award, Settings, LogOut,
   Bell, Menu, X, Home, BookOpen,
@@ -17,10 +17,18 @@ import Certificates from './Certificates';
 import Calendars from './Calendars';
 import Messages from './Messages';
 import StudentSetings from './StudentSettings'
+import { useAuth } from '../../../Components/auth/AuthContext';
+import authService from '../../../Components/services/authService';
+
 const StudentDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
-
+  const {auth,logout} = useAuth();
+  const userInfo = auth.user.info
+  const userInfo2 = auth.user
+  useEffect(()=>{
+    console.log(auth,'=========')
+  })
   // Navigation items exactly matching the image
   const navigationItems = [
     { icon: <Home />, label: "Dashboard", path: "/student/dashboard" },
@@ -34,7 +42,14 @@ const StudentDashboard = () => {
     { icon: <MessageSquare />, label: "Messages", path: "/student/messages" },
     { icon: <Settings />, label: "Settings", path: "/student/settings" }
   ];
-
+  const handleLogout = ()=>{
+    try {
+      logout();
+    navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  }
   return (
     <div className="w-full h-screen flex bg-gray-50">
       {/* Sidebar */}
@@ -66,8 +81,8 @@ const StudentDashboard = () => {
                 className="w-8 h-8 rounded-full border"
               />
               <div className="text-left">
-                <div className="font-medium text-sm">Alex Johnson</div>
-                <div className="text-xs text-gray-500">Grade 10</div>
+                <div className="font-medium text-sm">{userInfo2.name}</div>
+                <div className="text-xs text-gray-500">Grade:{userInfo.grade}</div>
               </div>
             </div>
           )}
@@ -89,7 +104,7 @@ const StudentDashboard = () => {
 
         {/* Logout Button */}
         <div className="absolute bottom-4 left-4">
-          <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <button onClick={handleLogout} className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
             <LogOut size={20} />
             {sidebarOpen && <span>Logout</span>}
           </button>
@@ -113,7 +128,7 @@ const StudentDashboard = () => {
                 alt="Profile" 
                 className="w-8 h-8 rounded-full border"
               />
-              <span className="font-medium text-gray-700">Alex Johnson</span>
+              <span className="font-medium text-gray-700">{userInfo2.name}</span>
             </div>
           </div>
         </header>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import StudentRegistrationForm from './StudentRegistrationForm';
 import { CheckCircle } from 'lucide-react'; // Import CheckCircle icon
+import authService from '../../../Components/services/authService';
 
 const StudentRegistrationManager = ({ numberOfStudents, guardianId,onCompleteAllRegistrations  }) => {
   const [currentStudent, setCurrentStudent] = useState(1);
@@ -12,20 +13,28 @@ const StudentRegistrationManager = ({ numberOfStudents, guardianId,onCompleteAll
   const handleStudentSubmit = async (studentData) => {
     setIsSubmitting(true);
     try {
-      const response = await fetch('http://localhost:5000/student/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...studentData,
-          guardianId,
-        }),
-      });
-      console.log("form submitted",response.json())
-      if (!response.ok) {
-        throw new Error('Failed to register student');
-      }
+      // const response = await fetch('http://localhost:5000/student/register', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     ...studentData,
+      //     guardianId,
+      //   }),
+      // });
+      // console.log("form submitted",response.json())
+      console.log(studentData)
+      console.log(guardianId)
+      const studentPayload = {
+        ...studentData,
+        guardianId: guardianId // Explicitly add guardianId to the payload
+      };
+
+      const result = await authService.registerStudent(studentPayload);
+      console.log("Registration response:", result);      // if (!response.ok) {
+      //   throw new Error('Failed to register student');
+      // }
 
       setCompletedStudents(prev => [...prev, studentData]);
       

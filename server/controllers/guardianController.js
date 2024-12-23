@@ -1,7 +1,10 @@
 const Guardian = require("../models/Guardian")
+const bcrypt= require('bcryptjs');
+const generateToken = require("../utils/generateToken");
 exports.registerGuardian = async (req,res)=>{
     try {
         const {
+          email,
           fullName,
           address,
           dateOfBirth,
@@ -17,7 +20,7 @@ exports.registerGuardian = async (req,res)=>{
           asylumStatus,
           password
         } = req.body;
-    
+        
         const existingGuardian = await Guardian.findOne({ 
             $or: [
               { nationalId },
@@ -31,9 +34,11 @@ exports.registerGuardian = async (req,res)=>{
               message: 'Guardian already exists with this National ID or Phone number'
             });
           }
-    
+          const salt = await bcrypt.genSalt(10)
+          const hashedPassword =await bcrypt.hash(password,salt)
         // Create guardian
         const guardian = await Guardian.create({
+          email,
           fullName,
           address,
           dateOfBirth,
@@ -47,14 +52,23 @@ exports.registerGuardian = async (req,res)=>{
           nationalId,
           occupation,
           asylumStatus,
-          password
+          password:hashedPassword
         });
-    
+        const token = generateToken(guardian._id)
+        console.log(guardian)
         // Send response
         res.status(201).json({
           success: true,
-          data: guardian,
-          message: 'Guardian registered successfully'
+          message: 'Guardian registered successfully',
+          token,
+          data: {
+            id: guardian._id,
+            firstName: guardian.fullName,
+            numberOfStudents:guardian.numberOfStudents,
+            email: guardian.email,
+            role:guardian.role
+        },
+        user:guardian
         });
     
       } catch (error) {
@@ -85,4 +99,40 @@ exports.registerGuardian = async (req,res)=>{
           error: error.message
         });
       }
+}
+
+exports.login = async (req,res)=>{
+  try {
+    const {email,password} = req.body;
+    const guardian = await Guardian.findOne({email});
+    if(!guardian){
+      return res.status(404).json({
+        success: false,
+        message: 'Guardian not found'
+      });
+    }
+    const isMatch = await bcrypt.compare(password,guardian.password);
+    if(!isMatch){
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid credentials'
+      })
+    }
+    const token = generateToken(guardian._id);
+    res.status(200).json({
+      success: true,
+      token: token,
+      message:'logged in successfully',
+      data: {
+        id: guardian._id,
+        firstName: guardian.fullName,
+        
+        email: guardian.email
+    },
+    role:guardian.role,
+    user:guardian
+    })
+  } catch (error) {
+    
+  }
 }

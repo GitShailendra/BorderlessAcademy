@@ -11,7 +11,9 @@ import {
   Flag,
   Upload,
   MessageSquare,
-  Globe
+  Globe,
+  Eye,
+  Mail
 } from 'lucide-react';
 const countries = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Australia", "Austria", 
@@ -26,6 +28,13 @@ const languages = [
   "English", "Spanish", "French", "German", "Arabic", "Chinese (Mandarin)", 
   "Hindi", "Japanese", "Russian", "Portuguese", "Korean", "Italian"
 ];
+// Default subjects for all students
+const defaultSubjects = [
+  "English",
+  "Mathematics",
+  "Science",
+  "Social Science"
+];
 const StudentRegistrationForm = ({ studentNumber, onSubmit }) => {
   const initialFormState = {
     firstName: '',
@@ -37,7 +46,10 @@ const StudentRegistrationForm = ({ studentNumber, onSubmit }) => {
     nationality: '',
     preferredLanguage: '',
     photo: null,
-    studentId: `SID-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+    email: '',
+    password: '',
+    studentId: `SID-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+    subjects: defaultSubjects
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -133,6 +145,21 @@ const StudentRegistrationForm = ({ studentNumber, onSubmit }) => {
           error = 'Student photo is required';
         }
         break;
+        case 'email':
+          if (!value?.trim()) {
+            error = 'Email is required';
+          } else if (!/^[\w-.]+@[\w-]+\.[a-z]{2,}$/.test(value)) {
+            error = 'Enter a valid email address';
+          }
+          break;
+  
+        case 'password':
+          if (!value) {
+            error = 'Password is required';
+          } else if (value.length < 6) {
+            error = 'Password must be at least 6 characters long';
+          }
+          break;
 
       default:
         break;
@@ -170,6 +197,7 @@ const StudentRegistrationForm = ({ studentNumber, onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
+      console.log('Form data:', formData);
       onSubmit(formData);
       // Clear form after successful submission
       setFormData(initialFormState);
@@ -190,6 +218,32 @@ const StudentRegistrationForm = ({ studentNumber, onSubmit }) => {
 
       <form onSubmit={handleSubmit}>
         <div className="space-y-4">
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`w-full pl-10 pr-4 py-2.5 border ${
+                  touched.email && errors.email ? 'border-red-500' : 'border-gray-200'
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500`}
+                placeholder="Enter email"
+              />
+              {touched.email && errors.email && (
+                <div className="flex items-center mt-1 text-red-500 text-sm">
+                  <AlertCircle className="w-4 h-4 mr-1" />
+                  {errors.email}
+                </div>
+              )}
+            </div>
+          </div>
+          
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               First Name <span className="text-red-500">*</span>
@@ -307,19 +361,19 @@ const StudentRegistrationForm = ({ studentNumber, onSubmit }) => {
             <div className="relative">
               <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <select
-                name="grade"
-                value={formData.grade}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full pl-10 pr-4 py-2.5 border ${
-                  touched.grade && errors.grade ? 'border-red-500' : 'border-gray-200'
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500`}
-              >
-                <option value="">Select grade</option>
-                {[...Array(10)].map((_, i) => (
-                  <option key={i + 1} value={i + 1}>Grade {i + 1}</option>
-                ))}
-              </select>
+              name="grade"
+              value={formData.grade}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`w-full pl-10 pr-4 py-2.5 border ${
+                touched.grade && errors.grade ? 'border-red-500' : 'border-gray-200'
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500`}
+            >
+              <option value="">Select grade</option>
+              {[1, 2, 3, 4, 5].map((grade) => (
+                <option key={grade} value={grade}>Grade {grade}</option>
+              ))}
+            </select>
               {touched.grade && errors.grade && (
                 <div className="flex items-center mt-1 text-red-500 text-sm">
                   <AlertCircle className="w-4 h-4 mr-1" />
@@ -441,6 +495,32 @@ const StudentRegistrationForm = ({ studentNumber, onSubmit }) => {
             )}
           </div>
         </div>
+        {/* Stundet Password  */}
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Password <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <Eye className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`w-full pl-10 pr-4 py-2.5 border ${
+                  touched.password && errors.password ? 'border-red-500' : 'border-gray-200'
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500`}
+                placeholder="Enter password"
+              />
+              {touched.password && errors.password && (
+                <div className="flex items-center mt-1 text-red-500 text-sm">
+                  <Eye className="w-4 h-4 mr-1" />
+                  {errors.password}
+                </div>
+              )}
+            </div>
+          </div>
 
         {/* Student ID (Read Only) */}
         <div>

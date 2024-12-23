@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Users,
   Search,
@@ -11,8 +11,11 @@ import {
   FileText,
   Mail
 } from 'lucide-react';
-
+import classService from '../../../Components/services/classServices';
 const Students = () => {
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [stu,setStu] = useState([]);
   // Sample data - replace with real data later
   const students = [
     {
@@ -49,7 +52,24 @@ const Students = () => {
       subjects: ["Physics", "Chemistry", "Mathematics"]
     }
   ];
+  useEffect(() => {
+    const fetchTotalStudents = async () => {
+      try {
+        const response = await classService.getStudents();
 
+        console.log('Total students:', response.data.students);
+        setStu(response.data.students);
+        setTotalStudents(response.data.total);
+      } catch (error) {
+        console.error('Error fetching student count:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTotalStudents();
+  }, []);
+  
   return (
     <div className="p-6">
       {/* Header Section */}
@@ -72,8 +92,7 @@ const Students = () => {
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-500">Total Students</h3>
-              <p className="text-2xl font-bold text-gray-800">156</p>
-            </div>
+              {loading ? '...' : totalStudents}            </div>
           </div>
         </div>
 
@@ -145,7 +164,7 @@ const Students = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {students.map((student) => (
+              {stu.map((student) => (
                 <tr key={student.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">

@@ -18,6 +18,8 @@ import {
   Clock,
   Home, Heart, AlertCircle, BadgeHelp,Users, CreditCard,EyeIcon
 } from 'lucide-react';
+import authService from '../../../Components/services/authService';
+import { useNavigate } from 'react-router-dom';
 
   const TeacherRegistrationForm = ({currentStep, onStepChange}) => {
     const [formData, setFormData] = useState({
@@ -51,6 +53,7 @@ import {
     });
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const navigate = useNavigate();
     const containerVariants = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 },
@@ -198,19 +201,9 @@ import {
         };
         console.log(teacherData)
 
-        const response = await fetch('http://localhost:5000/teacher/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(teacherData),
-        });
+        const result = await authService.registerTeacher(teacherData);
 
-        const result = await response.json();
-
-        if (!response.ok) {
-            throw new Error(result.message || 'Registration failed');
-        }
+      console.log(result.data, "submitted successfully");
 
         // Reset form after successful submission
         setFormData({
@@ -238,7 +231,7 @@ import {
             specialEducation: '',
             technologySkills:''
         });
-        
+        navigate('/teacher/dashboard');
     } catch (error) {
         setErrors(prev => ({
             ...prev,
@@ -567,10 +560,9 @@ import {
 
   {/* Subjects */}
   <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">Subjects Able to Teach</label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">Subjects  to Teach</label>
       <div className="grid grid-cols-3 gap-2">
-          {['Mathematics', 'Science', 'English', 'History', 'Geography', 'Physics', 
-            'Chemistry', 'Biology', 'Computer Science', 'Art', 'Music', 'Physical Education', 'Languages'].map(subject => (
+          {['Mathematics', 'Science', 'English', 'Social Science'].map(subject => (
               <div key={subject} className="flex items-center">
                   <input
                       type="checkbox"
@@ -594,7 +586,7 @@ import {
   <div>
       <label className="block text-sm font-medium text-gray-700 mb-1">Grade Levels Preferred</label>
       <div className="grid grid-cols-4 gap-2">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(grade => (
+          {[1, 2, 3, 4, 5].map(grade => (
               <div key={grade} className="flex items-center">
                   <input
                       type="checkbox"

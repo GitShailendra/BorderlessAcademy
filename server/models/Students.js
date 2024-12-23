@@ -7,6 +7,14 @@ const studentSchema = new mongoose.Schema({
     trim: true,
     minlength: [2, 'First name must be at least 2 characters']
   },
+  email:{
+    type:String,
+    required: [true, 'Email is required'],
+  },
+  password:{
+    type:String,
+    required: [true, 'Password is required'],
+  },
   lastName: {
     type: String,
     required: [true, 'Last name is required'],
@@ -82,7 +90,12 @@ const studentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Guardian'
 
-  }
+  },
+  role: {
+    type: String,
+    default: 'student',
+    immutable: true
+}
 }, {
   timestamps: true // This will automatically handle createdAt and updatedAt
 });

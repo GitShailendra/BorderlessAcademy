@@ -15,10 +15,13 @@ import ClassesManagement from './ClassesManagement';
 import Reports from './Reports';
 import Finance from './Finance'
 import AdminSettings from './AdminSettings';
+import authService from '../../../Components/services/authService';
+import { useAuth } from '../../../Components/auth/AuthContext';
 const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
-
+  const {auth} = useAuth();
+  
   // Add this near the top of your component
 const navigationItems = [
   { icon: <Home />, label: "Dashboard", path: "/admin/dashboard" },
@@ -32,7 +35,10 @@ const navigationItems = [
   { icon: <Database />, label: "Finance", path: "/admin/finance" },
   { icon: <Settings />, label: "Settings", path: "/admin/settings" }
 ];
-
+  const handleLogOut = ()=>{
+    authService.logout();
+    navigate('/login')
+  }
   return (
     <div className="w-full h-screen flex bg-gray-50">
       {/* Sidebar */}
@@ -91,7 +97,7 @@ const navigationItems = [
 
         {/* Logout Button */}
         <div className="absolute bottom-4 left-4">
-          <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <button onClick={handleLogOut} className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
             <span className="min-w-[20px]"><LogOut size={20} /></span>
             {sidebarOpen && <span>Logout</span>}
           </button>

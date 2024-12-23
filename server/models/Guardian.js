@@ -5,6 +5,13 @@ const guardianSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Full name is required']
   },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    unique: true,
+    
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email']
+},
   address: String,
   dateOfBirth: Date,
   numberOfStudents: Number,
@@ -31,7 +38,12 @@ const guardianSchema = new mongoose.Schema({
   students:[{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Student'
-  }]
+  }],
+  role: {
+    type: String,
+    default: 'guardian',
+    immutable: true
+}
 });
 
 module.exports = mongoose.model('Guardian', guardianSchema);

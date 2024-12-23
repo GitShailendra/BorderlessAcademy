@@ -50,13 +50,21 @@ const apiService = {
   },
 
   // POST request
-  async post(endpoint, data) {
+ 
+  post: async (endpoint, data) => {
     try {
-      return await api.post(endpoint, data);
+        // Log the request details for debugging
+        console.log('Making POST request:', {
+            endpoint,
+            data,
+            token: localStorage.getItem('token')
+        });
+        return await api.post(endpoint, data);
     } catch (error) {
-      throw error;
+        throw error;
     }
-  },
+},
+
 
   // PUT request
   async put(endpoint, data) {

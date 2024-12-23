@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   User,
   Bell,
@@ -9,6 +9,7 @@ import {
   ChevronRight,
   Book
 } from 'lucide-react';
+import { useAuth } from '../../../Components/auth/AuthContext';
 
 const StudentSettings = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -26,6 +27,11 @@ const StudentSettings = () => {
     { id: 'security', label: 'Security', icon: <Lock size={20} /> },
     { id: 'preferences', label: 'Preferences', icon: <Globe size={20} /> }
   ];
+  const {auth} = useAuth();
+  const userInfo = auth.user.info
+  useEffect(()=>{
+    console.log(userInfo,"hey this is settings page")
+  })
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -69,7 +75,7 @@ const StudentSettings = () => {
                   <div className="flex items-center gap-6">
                     <div className="relative">
                       <img
-                        src="/api/placeholder/80/80"
+                        src={userInfo.photo || '/api/placeholder/80/80'}
                         alt="Profile"
                         className="w-20 h-20 rounded-full"
                       />
@@ -93,7 +99,7 @@ const StudentSettings = () => {
                       </label>
                       <input
                         type="text"
-                        defaultValue="Alex Johnson"
+                        value={`${userInfo.firstName} ${userInfo.lastName}`}
                         className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -103,7 +109,7 @@ const StudentSettings = () => {
                       </label>
                       <input
                         type="text"
-                        defaultValue="STU2024001"
+                        value={userInfo.studentId}
                         disabled
                         className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50"
                       />
@@ -114,7 +120,7 @@ const StudentSettings = () => {
                       </label>
                       <input
                         type="email"
-                        defaultValue="alex.johnson@school.edu"
+                        value={userInfo.email}
                         className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -124,7 +130,7 @@ const StudentSettings = () => {
                       </label>
                       <input
                         type="text"
-                        defaultValue="Grade 10"
+                        value={`Grade ${userInfo.grade}`}
                         disabled
                         className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50"
                       />

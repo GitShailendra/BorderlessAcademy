@@ -1,32 +1,112 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   Mail, 
   Lock, 
   Eye, 
   EyeOff, 
-  Users, // For Parent icon
+  Users, 
   ArrowRight,
   AlertCircle,
-  GraduationCap // For Teacher icon
+  GraduationCap,
+  UserCircle
 } from 'lucide-react';
-
+import authService from '../../Components/services/authService';
+import {useAuth} from '../../Components/auth/AuthContext'
 const LoginPage = () => {
+  const {login} = useAuth()
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [loginType, setLoginType] = useState('teacher'); // 'teacher' or 'parent'
+  const [loginType, setLoginType] = useState('teacher'); // 'teacher', 'guardian', or 'student'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
     setError('');
-    // Handle login submission based on loginType
-    console.log(`Attempting ${loginType} login`);
+    
+    try {
+      const response = await authService.login({
+        email,
+        password,
+        userType: loginType === 'parent' ? 'guardian' : loginType // Convert 'parent' to 'guardian' for backend
+      });
+      console.log(`Attempting ${loginType} login`);
+      console.log(response.user)
+      if(response.success){
+        const userData = {
+          id: response.data.id,
+          role: loginType === 'parent' ? 'guardian' : loginType,
+          name: response.data.firstName || response.data.fullName,
+          info: response.user // Store additional user info if needed
+        };
+  
+        login(response.token, userData);
+        switch (loginType) {
+          case 'teacher':
+            navigate('/teacher/dashboard');
+            break;
+          case 'guardian':
+            navigate('/guardian/dashboard');
+            break;
+          case 'student':
+            navigate('/student/dashboard');
+            break;
+          default:
+            break;
+        }
+      }
+      
+      // Navigate to the appropriate dashboard based on login type
+     
+    } catch (error) {
+      setError('Invalid credentials. Please try again.');
+    }
+  };
+
+  const getPlaceholderEmail = () => {
+    switch (loginType) {
+      case 'teacher':
+        return 'teacher@borderless.edu';
+      case 'guardian':
+        return 'guardian@example.com';
+      case 'student':
+        return 'student@borderless.edu';
+      default:
+        return 'email@example.com';
+    }
+  };
+
+  const getLoginButtonText = () => {
+    switch (loginType) {
+      case 'teacher':
+        return 'Access Dashboard';
+      case 'guardian':
+        return "View Child's Progress";
+      case 'student':
+        return 'Access Student Portal';
+      default:
+        return 'Login';
+    }
+  };
+
+  const getInstructions = () => {
+    switch (loginType) {
+      case 'teacher':
+        return 'Access your teaching dashboard and resources';
+      case 'guardian':
+        return 'Monitor your child\'s progress and activities';
+      case 'student':
+        return 'Access your courses, assignments, and grades';
+      default:
+        return 'Login to your account';
+    }
   };
 
   return (
@@ -47,39 +127,49 @@ const LoginPage = () => {
           className="bg-white rounded-2xl shadow-xl p-8"
         >
           {/* Login Type Selector */}
-          <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-3 gap-3 mb-8">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setLoginType('teacher')}
-              className={`w-full py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors
+              className={`w-full py-3 px-2 rounded-lg flex items-center justify-center gap-2 transition-colors
                 ${loginType === 'teacher' 
                   ? 'bg-primary text-white' 
                   : 'bg-surface text-secondary hover:bg-primary/5'}`}
             >
-              <GraduationCap className="w-5 h-5" />
-              <span className="font-medium">Teacher</span>
+              <GraduationCap className="w-4 h-4" />
+              <span className="font-medium text-sm">Teacher</span>
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => setLoginType('parent')}
-              className={`w-full py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors
-                ${loginType === 'parent' 
+              onClick={() => setLoginType('student')}
+              className={`w-full py-3 px-2 rounded-lg flex items-center justify-center gap-2 transition-colors
+                ${loginType === 'student' 
                   ? 'bg-primary text-white' 
                   : 'bg-surface text-secondary hover:bg-primary/5'}`}
             >
-              <Users className="w-5 h-5" />
-              <span className="font-medium">Parent</span>
+              <UserCircle className="w-4 h-4" />
+              <span className="font-medium text-sm">Student</span>
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setLoginType('guardian')}
+              className={`w-full py-3 px-2 rounded-lg flex items-center justify-center gap-2 transition-colors
+                ${loginType === 'guardian' 
+                  ? 'bg-primary text-white' 
+                  : 'bg-surface text-secondary hover:bg-primary/5'}`}
+            >
+              <Users className="w-4 h-4" />
+              <span className="font-medium text-sm">Guardian</span>
             </motion.button>
           </div>
 
           {/* Login Instructions */}
           <div className="mb-6 text-center">
             <p className="text-secondary text-sm">
-              {loginType === 'teacher' 
-                ? 'Access your teaching dashboard and resources'
-                : 'Monitor your childs progress and activities'}
+              {getInstructions()}
             </p>
           </div>
 
@@ -97,7 +187,7 @@ const LoginPage = () => {
 
             <div>
               <label className="block text-sm font-medium text-secondary mb-1">
-                {loginType === 'teacher' ? 'Teacher Email' : 'Parent Email'}
+                {`${loginType.charAt(0).toUpperCase() + loginType.slice(1)} Email`}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary" />
@@ -106,7 +196,7 @@ const LoginPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 border border-surface rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
-                  placeholder={loginType === 'teacher' ? "teacher@borderless.edu" : "parent@example.com"}
+                  placeholder={getPlaceholderEmail()}
                 />
               </div>
             </div>
@@ -161,7 +251,7 @@ const LoginPage = () => {
               whileTap={{ scale: 0.98 }}
               className="w-full py-3 bg-primary text-white rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
             >
-              {loginType === 'teacher' ? 'Access Dashboard' : 'View Child\'s Progress'}
+              {getLoginButtonText()}
               <ArrowRight className="w-5 h-5" />
             </motion.button>
           </form>
@@ -171,8 +261,10 @@ const LoginPage = () => {
             <p className="text-secondary text-sm">
               {loginType === 'teacher' 
                 ? 'New teacher? Contact your administrator for access'
+                : loginType === 'student'
+                ? 'New student? Contact your school for login credentials'
                 : "Don't have an account yet? "}
-              {loginType === 'parent' && (
+              {loginType === 'guardian' && (
                 <motion.a
                   href="/register"
                   whileHover={{ scale: 1.02 }}

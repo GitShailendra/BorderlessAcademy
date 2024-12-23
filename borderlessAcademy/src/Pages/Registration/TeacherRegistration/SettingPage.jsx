@@ -13,6 +13,7 @@ import {
   Save,
   X
 } from 'lucide-react';
+import { useAuth } from '../../../Components/auth/AuthContext';
 
 const SettingPage = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -29,6 +30,9 @@ const SettingPage = () => {
     { id: 'security', label: 'Security', icon: <Lock size={20} /> },
     { id: 'preferences', label: 'Preferences', icon: <Globe size={20} /> }
   ];
+  const {auth} = useAuth();
+  const userInfo = auth.user.info
+  const userInfo2 = auth.user
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -72,7 +76,7 @@ const SettingPage = () => {
                   <div className="flex items-center gap-6">
                     <div className="relative">
                       <img
-                        src="/api/placeholder/80/80"
+                        src={userInfo.profilePhoto||"/api/placeholder/80/80"}
                         alt="Profile"
                         className="w-20 h-20 rounded-full"
                       />
@@ -96,7 +100,7 @@ const SettingPage = () => {
                       </label>
                       <input
                         type="text"
-                        defaultValue="Dr. Sarah Smith"
+                        value={userInfo2.name}
                         className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
@@ -106,11 +110,11 @@ const SettingPage = () => {
                       </label>
                       <input
                         type="email"
-                        defaultValue="sarah.smith@school.edu"
+                        value={userInfo.email}
                         className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
-                    <div>
+                    {/* <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Department
                       </label>
@@ -119,14 +123,14 @@ const SettingPage = () => {
                         defaultValue="Science Department"
                         className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
-                    </div>
+                    </div> */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Phone Number
                       </label>
                       <input
                         type="tel"
-                        defaultValue="+1 (555) 123-4567"
+                        value={userInfo.phoneNumber}
                         className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>

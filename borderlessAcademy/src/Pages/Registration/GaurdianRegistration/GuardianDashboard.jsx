@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import {
   Users, Book, Award, Settings, LogOut,
   Bell, Menu, X, Home, BookOpen,
@@ -16,11 +16,24 @@ import Progress from './Progress';
 import Assignments from './Assignments'
 import Messages from './Messages'
 import GuardianSettings from './GuardianSettings'
+import authService from '../../../Components/services/authService';
+import { useAuth } from '../../../Components/auth/AuthContext';
 const GuardianDashboard = () => {
+  const {auth} = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [currentStudent, setCurrentStudent] = useState('student1');
   const navigate = useNavigate();
-
+  useEffect(()=>{
+    console.log(auth,'.....')
+  })
+  const handleLogout = () => {
+    try {
+      authService.logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
   const students = {
     student1: { name: 'John Doe', grade: '4th Grade', image: img1 },
     student2: { name: 'Jane Doe', grade: '2nd Grade', image: img2 }
@@ -92,7 +105,7 @@ const GuardianDashboard = () => {
 
         {/* Logout Button */}
         <div className="absolute bottom-4 left-4">
-          <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <button onClick={handleLogout} className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
             <LogOut size={20} />
             {sidebarOpen && <span>Logout</span>}
           </button>
